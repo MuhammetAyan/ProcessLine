@@ -36,7 +36,7 @@ class ProcessInput:
         self.header = None
         self.attributes = {}
         if type == ProcessIOType.Csv:
-            self.attributes = {"split-char": ",", "has-header": True, "skip-wrong-rows": True}
+            self.attributes = {"split-char": ",", "has-header": True, "skip-wrong-rows": True, "convert-list": None}
         elif type == ProcessIOType.Pickle:
             self.attributes = {"has-header": True}
     
@@ -75,8 +75,14 @@ class ProcessInput:
     
     def read(self) -> object:
         try:
-            for row in self._generator(*self._gen_args):
-                yield row
+            if self.attributes["convert-list"] == None:
+                for row in self._generator(*self._gen_args):
+                    yield row
+            else:
+                for row in self._generator(*self._gen_args):
+                    for i in range(len(row)):
+                        row[i] = self.attributes["convert-list"][i](row[i])
+                    yield row
         except:
             self._canRead = False
 
@@ -100,7 +106,7 @@ class ProcessOutput:
         self._canWrite = False
         self.attributes = {}
         if type == ProcessIOType.Csv:
-            self.attributes = {"split-char": ",", "has-header": True}
+            self.attributes = {"split-char": ",", "has-header": True, "convert-list": None}
         elif type == ProcessIOType.Pickle:
             self.attributes = {"has-header": True}
     
@@ -116,15 +122,21 @@ class ProcessOutput:
         
         self._canWrite = True
         if self.attributes["has-header"]:
-            self.write(header)
+            self._write(header, True)
     
     def _csv_row_editor(self, row: list)-> None:
-        _row = [col if col is not None else "" for col in row]
+        _row = [str(col) if col is not None else "" for col in row]
         self._fs.write(self.attributes["split-char"].join(_row) + "\n")
     
     def write(self, row: object) -> None:
+        return self._write(row)
+
+    def _write(self, row: object, isHeader=False) -> None:
         if not self._canWrite: return False
         try:
+            if not isHeader:
+                for i in range(len(row)):
+                    row[i] = self.attributes["convert-list"][i](row[i])
             params = [row]
             params.extend(self._wr_args)
             self._writer(*params)

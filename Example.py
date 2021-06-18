@@ -1,12 +1,22 @@
+from datetime import datetime
 import ProcessLine.Process as pr
+import ProcessLine.convater as con
 import sys
 
 # Define IO
 inp = pr.ProcessInput("input-example.csv", pr.ProcessIOType.Csv)
 inp.attributes["split-char"] = ','
+# Define data structure convertion for input
+ci = con.ConvaterInput()
+ci.datetime_format = "%Y-%m"
+inp.attributes["convert-list"] = [ci.datetime, ci.datetime, str, str, str, str, ci.int, ci.int, str]
 
 out = pr.ProcessOutput("output.csv", pr.ProcessIOType.Csv)
 out.attributes["split-char"] = '\t'
+# Define data structure convertion for output
+co = con.ConvaterOutput()
+co.datetime_format = "%Y.%m"
+out.attributes["convert-list"] = [co.datetime, co.datetime, str, str, str, str, co.number, co.number, str]
 
 # Define process object
 pro = pr.Process(inp, out)
@@ -35,6 +45,7 @@ def TestLayer(lyr):
 
 # Specify middleware layers
 pro.Layers = [
+    # pr.Layer(ConvertLayer),
     pr.Layer(TestLayer)
     # Here middleware functions will be specified.
 ]
