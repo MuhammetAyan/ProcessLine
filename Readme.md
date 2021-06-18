@@ -1,6 +1,6 @@
 # ProcessLine
 
-Veri önişlemeleri middleware mantığıyla yapmanıza olanak tanır. Verilerinize yapılacak işlemlerinizi küçük fonksiyonlara bölerek yönetirsiniz. Şimdilik `CSV` ve `pickle` dosyaları işlemeyi desteklemektedir. Daha sonra  IO olarak dosya türünden bağımsız hatta TCP, http gibi haberleşme protokollerini de desteklemesi planlanmaktadır. Veriler akış (stream) mantığıyla işlendiği için tüm veri belleğe alınmayarak bellek verimli kullanılır.
+Veri önişlemelerini middleware mantığıyla yapmanıza olanak tanır. Verilerinize yapılacak işlemlerinizi küçük fonksiyonlara bölerek yönetirsiniz. Şimdilik `CSV` ve `pickle` dosyaları işlemeyi desteklemektedir. Daha sonra  IO olarak dosya türünden bağımsız hatta TCP, http gibi haberleşme protokollerini de desteklemesi planlanmaktadır. Veriler akış (stream) mantığıyla işlendiği için tüm veri belleğe alınmayarak bellek verimli kullanılır.
 
 ## Temel Kullanım
 
